@@ -57,7 +57,9 @@ public class UserController {
     public ResponseEntity<Object> updateUser(@PathVariable(value = "userId") UUID userId,
                                              @RequestBody @Validated(UserDto.UserView.UserPut.class)
                                              @JsonView(UserDto.UserView.UserPut.class) UserDto userDto){
+
         log.debug("PUT updateUser userDto received {} ", userDto.toString());
+
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if(!userModelOptional.isPresent()){
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
@@ -77,14 +79,17 @@ public class UserController {
     public ResponseEntity<Object> updatePassword(@PathVariable(value = "userId") UUID userId,
                                                  @RequestBody @Validated(UserDto.UserView.PasswordPut.class)
                                                  @JsonView(UserDto.UserView.PasswordPut.class) UserDto userDto){
+
         log.debug("PUT updatePassword userDto received {} ", userDto.toString());
+
         Optional<UserModel> userModelOptional = userService.findById(userId);
-        if(!userModelOptional.isPresent()){
+
+        if(!userModelOptional.isPresent()) {
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         } if(!userModelOptional.get().getPassword().equals(userDto.getOldPassword())){
             log.warn("Mismatched old password userId {} ", userId);
             return  ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Mismatched old password!");
-        } else{
+        } else {
             var userModel = userModelOptional.get();
             userModel.setPassword(userDto.getPassword());
             userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
@@ -98,11 +103,13 @@ public class UserController {
     public ResponseEntity<Object> updateImage(@PathVariable(value = "userId") UUID userId,
                                               @RequestBody @Validated(UserDto.UserView.ImagePut.class)
                                               @JsonView(UserDto.UserView.ImagePut.class) UserDto userDto){
+
         log.debug("PUT updateImage userDto received {} ", userDto.toString());
+
         Optional<UserModel> userModelOptional = userService.findById(userId);
-        if(!userModelOptional.isPresent()){
+        if(!userModelOptional.isPresent()) {
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
-        } else{
+        } else {
             var userModel = userModelOptional.get();
             userModel.setImageUrl(userDto.getImageUrl());
             userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
